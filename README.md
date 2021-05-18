@@ -1,62 +1,74 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400"></a></p>
+# Introduction
 
-<p align="center">
-<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+I was given a task to create an API for Gilded Rose with Laravel. I used XAMPP for my database.
 
-## About Laravel
+### Migrations
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+I started off by creating controllers and migration files for items and categories. In categories migration file all we
+needed was id and name, in items migrations we needed to constrain a foreign id (id in category table) to the category of an item (category (integer) in items table)
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+### Models
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+In models Item and Controller I have set up fillable properties and hasMany hasOne relationships. 
 
-## Learning Laravel
+### Resources
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+Resources were created to reduce the amount of unimportant data that we get from the database with API requests, 
+such as 'created_at' and 'updated_at'.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 1500 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### Routes
 
-## Laravel Sponsors
+In routes, I have set up API routes that correspond to its controller methods and do the specified logic. 
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+### Controllers
 
-### Premium Partners
+In controllers all the required methods have been created for CRUD functionality and also validation was implemented. I was not quite sure about some requirements, so I made a couple of different variations for some methods.
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[OP.GG](https://op.gg)**
+## How to use this API
 
-## Contributing
+### Set up
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+- Clone the project from github ```git clone https://github.com/lukosss/GildedRoseApi.git```
+- change directory to project folder, type in terminal ```cd GildedRoseApi```
+- Install all the dependencies using composer ```composer install```
+- Copy and paste .env.example file and rename it to .env, then replace all the information with Your database information and log-ins.
+    - For example in XAMPP You will most likely just need to change the `DB_DATABASE=laravel` to Your database name.
+    
+- Once .env is set up, You need to migrate the database tables by typing in the terminal ```php artisan migrate``` (make sure You are in the project folder)
+- Now You just need to start the server with ```php artisan serve``` command in the terminal. Now once the server is running You can start using this API. List of available API routes below.
 
-## Code of Conduct
+### List of API routes
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+For this You will need an application like Postman to test these routes since there is no front-end for this app.
+1. GET methods (get some or all of the items/ categories)
+    1. ```http://127.0.0.1:8000/api/items``` - get an array of all the created items in the database.
+    2. ```http://127.0.0.1:8000/api/categories``` - get an array of all the created categories in the database.
+    3. ```http://127.0.0.1:8000/api/items/{categoryId}``` - get all the items that are of specified category by category <strong>ID</strong>. Replace ```{categoryId}``` with wanted category id (integer). E.g. ```/api/items/1```
+    4. ```http://127.0.0.1:8000/api/category/{categoryName}``` - get all the items that are of specified category by category <strong>NAME</strong>. Replace ```{categoryName}``` with wanted category name (string, case-sensitive). E.g. ```/api/category/Aged Brie``` - space might need to be replaced with ```%20```.
+    
+2. POST methods (create an item or category)
+    1. ```http://127.0.0.1:8000/api/item/store``` - create a new item, required parameters - category (int, must already be an existing category of this id already created), name (string, must always end in _item suffix), value(float, at least 10, no greater than 100), quality (int, at least -10, no greater than 50)
+       e.g. for body:<br />
+       {<br />
+       &nbsp;&nbsp;&nbsp;&nbsp;"category": "1",<br />
+       &nbsp;&nbsp;&nbsp;&nbsp;"name": "Stone pickaxe_item",<br />
+       &nbsp;&nbsp;&nbsp;&nbsp;"value": 19.99,<br />
+       &nbsp;&nbsp;&nbsp;&nbsp;"quality": 20,<br />
+       }<br />
+    2. ```http://127.0.0.1:8000/api/category/store``` - create a new category, required parameters - name (string, must be at least 5 symbols) e.g. for body:<br />
+       {<br />
+       &nbsp;&nbsp;&nbsp;&nbsp;"name": "Sulfuras",<br />
+       }<br />
+       
+3. PUT methods (update an item or category)
+    1. ```http://127.0.0.1:8000/api/item/{itemId}``` - update an item, parameters for the body are the same as in item creation, except that You only need to pass in the ones You want to change. Replace ```{itemId}``` with wanted item id (integer). E.g. ```/api/item/1```. E.g. for body:<br />
+       {<br />
+       &nbsp;&nbsp;&nbsp;&nbsp;"name": "ChangeOnlyName_item",<br />
+       }<br />
+    2. ```http://127.0.0.1:8000/api/category/{categoryId}``` - update a category, parameters for the body are the same as in category creation. Replace ```{categoryId}``` with wanted category id (integer). E.g. ```/api/category/3```
 
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+4. DELETE methods (delete an item, category or all the items from specified category)
+    1. ```http://127.0.0.1:8000/api/item/{itemId}``` - delete an item of specified id. Replace ```{itemId}``` with wanted item id (integer). E.g. ```/api/item/2```.
+    2. ```http://127.0.0.1:8000/api/category/{categoryId}``` - delete a category of specified id. Replace ```{categoryId}``` with wanted category id (integer). E.g. ```/api/category/2```.
+    3. ```http://127.0.0.1:8000/api/category/deleteItemsFromCategoryName/{categoryName}``` - deletes all the items that have the specified category, in this case by a category <strong>NAME</strong> property. Replace ```{categoryName}``` with wanted category name (string, case sensitive). E.g. ```/api/category/deleteItemsFromCategoryName/Sulfuras```.
+    4. ```http://127.0.0.1:8000/api/category/deleteItemsFromCategoryId/{categoryId}``` - deletes all the items that have the specified category, except this time route expects for a category <strong>ID</strong>. Replace ```{categoryId}``` with wanted category id (integer). E.g. ```/api/category/deleteItemsFromCategoryId/2```.

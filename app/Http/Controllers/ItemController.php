@@ -37,7 +37,7 @@ class ItemController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'category' => 'required',
+            'category' => 'required|numeric',
             'name' => 'required|ends_with:_item',
             'value' => 'required|numeric|min:10|max:100',
             'quality' => 'required|numeric|min:-10|max:50'
@@ -89,10 +89,10 @@ class ItemController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'category' => 'required',
-            'name' => 'required|ends_with:_item',
-            'value' => 'required|numeric|min:10|max:100',
-            'quality' => 'required|numeric|min:-10|max:50'
+            'category' => 'numeric',
+            'name' => 'ends_with:_item',
+            'value' => 'numeric|min:10|max:100',
+            'quality' => 'numeric|min:-10|max:50'
         ]);
 
         $existingItem = Item::findOrFail($id);
