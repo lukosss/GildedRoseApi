@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\ItemResource;
 use Illuminate\Http\Request;
 use App\Models\Item;
 
@@ -14,7 +15,7 @@ class ItemController extends Controller
      */
     public function index()
     {
-      return Item::orderBy('created_at', 'DESC')->get();
+        return ItemResource::collection(Item::all());
     }
 
     /**
@@ -30,25 +31,25 @@ class ItemController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
     {
-        $newItem = new Item;
-        $newItem->category = $request->item["category"];
-        $newItem->name = $request->item["name"];
-        $newItem->value = $request->item["value"];
-        $newItem->quality = $request->item["quality"];
-        $newItem->save();
+        $request->validate([
+            'category' => 'required',
+            'name' => 'required|ends_with:_item',
+            'value' => 'required|numeric|min:10|max:100',
+            'quality' => 'required|numeric|min:-10|max:50'
+        ]);
 
-        return $newItem;
+        return Item::create($request->all());
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function show($id)
@@ -59,7 +60,7 @@ class ItemController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
@@ -70,32 +71,35 @@ class ItemController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param \Illuminate\Http\Request $request
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
     {
+        $request->validate([
+            'category' => 'required',
+            'name' => 'required|ends_with:_item',
+            'value' => 'required|numeric|min:10|max:100',
+            'quality' => 'required|numeric|min:-10|max:50'
+        ]);
+
         $existingItem = Item::findOrFail($id);
-        $existingItem->category = $request->item["category"];
-        $existingItem->name = $request->item["name"];
-        $existingItem->value = $request->item["value"];
-        $existingItem->quality = $request->item["quality"];
-        $existingItem->save();
+        $existingItem->update($request->all());
+
         return $existingItem;
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
     {
-        $existingItem = Item::find($id);
-        if ($existingItem) {
-            $existingItem->delete();
+        if (Item::find($id)) {
+            Item::destroy($id);
             return "Item successfully deleted";
         }
 

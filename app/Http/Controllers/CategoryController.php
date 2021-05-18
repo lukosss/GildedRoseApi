@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\CategoryResource;
 use App\Models\Category;
 use Illuminate\Http\Request;
 
@@ -14,7 +15,7 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        return Category::orderBy('created_at', 'DESC')->get();
+        return CategoryResource::collection(Category::all());
     }
 
     /**
@@ -35,11 +36,11 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
-        $newCategory = new Category;
-        $newCategory->name = $request->category["name"];
-        $newCategory->save();
+        $request->validate([
+            'name' => 'required|string|min:5',
+        ]);
 
-        return $newCategory;
+        return Category::create($request->all());
     }
 
     /**
@@ -73,9 +74,13 @@ class CategoryController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $request->validate([
+            'name' => 'required|string|min:5',
+        ]);
+
         $existingCategory = Category::findOrFail($id);
-        $existingCategory->name = $request->category["name"];
-        $existingCategory->save();
+        $existingCategory->update($request->all());
+
         return $existingCategory;
     }
 
@@ -87,9 +92,8 @@ class CategoryController extends Controller
      */
     public function destroy($id)
     {
-        $existingItem = Category::find($id);
-        if ($existingItem) {
-            $existingItem->delete();
+        if (Category::find($id)) {
+            Category::destroy($id);
             return "Category successfully deleted";
         }
 

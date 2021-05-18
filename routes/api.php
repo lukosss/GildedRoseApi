@@ -20,6 +20,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+// Items
 Route::get('/items', [ItemController::class, 'index']);
 
 Route::prefix('/item')->group( function() {
@@ -28,6 +29,7 @@ Route::prefix('/item')->group( function() {
     Route::delete('/{id}', [ItemController::class, 'destroy']);
 });
 
+// Categories
 Route::get('/categories', [CategoryController::class, 'index']);
 
 Route::prefix('/category')->group( function() {
