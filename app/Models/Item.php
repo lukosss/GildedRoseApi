@@ -15,4 +15,9 @@ class Item extends Model
         'value',
         'quality'
     ];
+
+    public function category()
+    {
+        return $this->hasOne(Category::class,'id', 'category');
+    }
 }

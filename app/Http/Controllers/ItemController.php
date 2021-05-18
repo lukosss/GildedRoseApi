@@ -54,7 +54,7 @@ class ItemController extends Controller
      */
     public function show($id)
     {
-        //
+        return ItemResource::collection(Item::all()->where('category', $id));
     }
 
     /**
@@ -100,9 +100,9 @@ class ItemController extends Controller
     {
         if (Item::find($id)) {
             Item::destroy($id);
-            return "Item successfully deleted";
+            return 'Item successfully deleted';
         }
 
-        return "Item not found";
+        return 'Item not found';
     }
 }

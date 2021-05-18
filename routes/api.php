@@ -22,6 +22,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 // Items
 Route::get('/items', [ItemController::class, 'index']);
+Route::get('/items/{id}', [ItemController::class, 'show']);
 
 Route::prefix('/item')->group( function() {
     Route::post('/store', [ItemController::class, 'store']);
@@ -31,6 +32,8 @@ Route::prefix('/item')->group( function() {
 
 // Categories
 Route::get('/categories', [CategoryController::class, 'index']);
+Route::get('/category/{categoryName}', [CategoryController::class, 'showItemsFromCategory']);
+Route::delete('/category/deleteAllFromCategory/{categoryName}', [CategoryController::class, 'showItemsFromCategory']);
 
 Route::prefix('/category')->group( function() {
     Route::post('/store', [CategoryController::class, 'store']);
