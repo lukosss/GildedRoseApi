@@ -54,6 +54,17 @@ class ItemController extends Controller
      */
     public function show($id)
     {
+        //
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param int $id
+     * @return \Illuminate\Http\Response
+     */
+    public function showItemsFromCategoryById($id)
+    {
         return ItemResource::collection(Item::all()->where('category', $id));
     }
 

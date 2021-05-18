@@ -53,19 +53,19 @@ class CategoryController extends Controller
      */
     public function show($id)
     {
-        return ItemResource::collection(Item::all()->where('category', $id));
+        //
     }
 
     /**
-     * Display the specified resource.
+     * Display the resources from specified category.
      *
-     * @param int $id
+     * @param $categoryName
      * @return \Illuminate\Http\Response
      */
-    public function showItemsFromCategory($categoryName)
+    public function showItemsFromCategoryByName($categoryName)
     {
-        $categoryId = Category::where('name',$categoryName)->pluck('id');
-        if(count($categoryId)){
+        $categoryId = Category::where('name', $categoryName)->pluck('id');
+        if (count($categoryId)) {
             return ItemResource::collection(Item::where('category', $categoryId)->get());
         }
         return 'Category ' . $categoryName . ' not found';
@@ -112,6 +112,42 @@ class CategoryController extends Controller
         if (Category::find($id)) {
             Category::destroy($id);
             return 'Category successfully deleted';
+        }
+
+        return 'Category not found';
+    }
+
+    /**
+     * Remove all the items of specified category from storage.
+     *
+     * @param $categoryName
+     * @return \Illuminate\Http\Response
+     */
+    public function destroyAllItemsFromCategory($categoryName)
+    {
+        $categoryId = Category::where('name', $categoryName)->pluck('id');
+
+        if (count($categoryId)) {
+            $id = Item::where('category', $categoryId)->pluck('id');
+            Item::destroy($id);
+            return 'Category ' . $categoryName . ' items successfully deleted';
+        }
+
+        return 'Category not found';
+    }
+
+    /**
+     * Remove all the items of specified category from storage.
+     *
+     * @param $categoryName
+     * @return \Illuminate\Http\Response
+     */
+    public function destroyAllItemsFromCategoryId($categoryId)
+    {
+        if (Category::find($categoryId)) {
+            $id = Item::where('category', $categoryId)->pluck('id');
+            Item::destroy($id);
+            return 'Category id ' . $categoryId . ' items successfully deleted';
         }
 
         return 'Category not found';
