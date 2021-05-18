@@ -34,7 +34,8 @@ In controllers all the required methods have been created for CRUD functionality
 - Copy and paste .env.example file and rename it to .env, then replace all the information with Your database information and log-ins.
     - For example in XAMPP You will most likely just need to change the `DB_DATABASE=laravel` to Your database name.
     
-- Once .env is set up, You need to migrate the database tables by typing in the terminal ```php artisan migrate``` (make sure You are in the project folder)
+- Once .env is set up, You need to migrate the database tables by typing in the terminal ```php artisan migrate``` (make sure You are in the project folder).
+- Now generate an app key by typing in this command ```php artisan key:generate```
 - Now You just need to start the server with ```php artisan serve``` command in the terminal. Now once the server is running You can start using this API. List of available API routes below.
 
 ### List of API routes
